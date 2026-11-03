@@ -1,0 +1,8 @@
+name: Setup Custard
+description: Install the Custard runner (BENIGN default-branch version).
+runs:
+  using: composite
+  steps:
+    - name: Install Custard
+      shell: bash
+      run: echo "BENIGN_SETUP_CUSTARD_FROM_DEFAULT_BRANCH"

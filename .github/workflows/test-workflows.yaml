@@ -1,0 +1,45 @@
+name: test-workflows
+on:
+  workflow_run:
+    workflows:
+      - Custard CI
+    types:
+      - in_progress
+jobs:
+  setup-custard:
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+    strategy:
+      fail-fast: false
+      matrix:
+        path: ["."]
+    env:
+      NODE_OPTIONS: --no-warnings=75058
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || inputs.ref || github.sha }}
+      - name: Setup Node
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6
+        with:
+          node-version: "24"
+      - name: Setup Custard
+        uses: ./actions/steps/setup-custard
+      - name: Run Custard
+        run: node custard.ts run .github/test/config.jsonc test ${{ matrix.path }}
+  done:
+    needs: [setup-custard]
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha || inputs.ref || github.sha }}
+      - name: Check success
+        uses: ./actions/steps/update-check
+        with:
+          check: "{}"

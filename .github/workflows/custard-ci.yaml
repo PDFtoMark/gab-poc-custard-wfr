@@ -1,0 +1,14 @@
+name: Custard CI
+on:
+  pull_request:
+    paths:
+      - .github/**
+      - actions/**
+      - custard/**
+jobs:
+  submit-job:
+    name: submit job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job submitted
+        run: echo "Job submitted."

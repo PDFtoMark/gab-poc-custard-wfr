@@ -1,0 +1,8 @@
+name: Update check
+description: BENIGN default-branch version.
+runs:
+  using: composite
+  steps:
+    - name: Update
+      shell: bash
+      run: echo "BENIGN_UPDATE_CHECK_FROM_DEFAULT_BRANCH"
